@@ -8,7 +8,6 @@ def main():
     dtmc.add_transition(s1,1,s2)
     dtmc.add_transition(s2,1,s1)
     dtmc.visualize()
-    print(dtmc.is_aperiodic())
 
 
 if __name__ == "__main__":
