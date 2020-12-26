@@ -14,6 +14,7 @@ class DTMC:
         self.transition_id = 0
         self.transition_matrix = None
         self.initial_state = None
+        self.rewards = dict()
 
     def add_state(self, label):
         """Adds state to DTMC and returns it"""
@@ -23,6 +24,9 @@ class DTMC:
         self.state_id += 1
         self.states.add(s)
         return s
+
+    def set_reward(self,state,reward):
+        self.rewards[state] = reward
 
     def add_transition(self, source, p, target):
         """Adds transition from source to target with probability p"""
@@ -48,7 +52,6 @@ class DTMC:
         nx.draw(G, with_labels=True, font_weight='bold')
         edge_labels = nx.get_edge_attributes(G, 'p')
         nx.draw_networkx_edge_labels(G, pos, edge_labels)
-        plt.show()
 
     def compute_transition_matrix(self) -> None:
         """Computes the transition matrix for the DTMC"""
@@ -64,6 +67,23 @@ class DTMC:
         pi = np.zeros(len(self.states))
         pi[self.initial_state.id] = 1
         return pi.dot(np.linalg.matrix_power(self.transition_matrix, t))
+
+    def steady_state(self):
+        """Computes steady state of chain"""
+        if self.transition_matrix is None:
+            self.compute_transition_matrix()
+        if self.is_ergodic():
+            n = len(self.states)
+            a = self.transition_matrix - np.identity(len(self.states))
+            a = np.transpose(a)
+            a = np.vstack([a[:-1,:],np.ones(n)])
+            b = np.vstack([np.zeros((n-1,1)),np.ones((1,1))])
+            print(a)
+            print(b)
+            pi = np.linalg.solve(a,b).reshape((1,3))
+            print(pi)
+            print(pi.dot(self.transition_matrix))
+
 
     def is_irreducible(self):
         """Check if chain is irreducible"""
@@ -102,7 +122,6 @@ class DTMC:
     def is_ergodic(self):
         """Check if chain is ergodic"""
         return self.is_irreducible() and self.__is_aperiodic()
-
 
 
 class State:
