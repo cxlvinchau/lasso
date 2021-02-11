@@ -1,5 +1,6 @@
 from lasso.dtmc import DTMC
 from lasso.pctl.formulae import Atomic
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -18,7 +19,8 @@ def main():
     a2.add_states(s3)
     f = (-(a1))
     f.eval()
-    print(f.states)
+    dtmc.visualize()
+    plt.show()
 
 
 
