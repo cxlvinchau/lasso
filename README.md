@@ -4,4 +4,4 @@ Model checks PCTL properties and computes transient and steady state distributio
 In traditional model checking and automata theory, a lasso refers to the infinite part of a sequence accepted by an automaton (e.g. Büchi).
 
 ## Background
-This tool is developed to practise contents from the **Quantitative Verification** course at TUM.
+This tool is developed to practice contents from the **Quantitative Verification** course at TUM.
