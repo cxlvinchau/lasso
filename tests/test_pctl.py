@@ -1,11 +1,11 @@
 import unittest
 
-from models.dtmc import DTMC
-from pctl import AP, Disjunction, Conjunction, BoundedUntil, P
-from utils import Interval
+from lasso.models.dtmc import DTMC
+from lasso.pctl import AP, Disjunction, Conjunction, BoundedUntil, P
+from lasso.utils import Interval
 
 
-class PCTLTest(unittest.TestCase):
+class TestPCTL(unittest.TestCase):
 
     def setUp(self) -> None:
         self.dtmc = DTMC()

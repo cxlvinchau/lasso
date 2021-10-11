@@ -17,3 +17,6 @@ class Interval:
 
     def __str__(self):
         return f"[{self.lb}, {self.ub}]"
+
+    def __repr__(self):
+        return f"Interval({self.lb}, {self.ub})"

@@ -1,10 +1,10 @@
 import unittest
 import numpy as np
 
-from models.dtmc import DTMC
+from lasso.models.dtmc import DTMC
 
 
-class DTMCTest(unittest.TestCase):
+class TestDTMC(unittest.TestCase):
 
     def setUp(self) -> None:
         self.dtmc = DTMC()

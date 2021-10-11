@@ -1,9 +1,9 @@
-from models.dtmc import DTMC, State
+from lasso.models.dtmc import DTMC, State
 
 import abc
 import numpy as np
 
-from utils import Interval
+from lasso.utils import Interval
 
 
 class StateFormula(abc.ABC):
@@ -26,6 +26,56 @@ class PathFormula(abc.ABC):
     @abc.abstractmethod
     def compute_probability(self, state: State, dtmc: DTMC):
         pass
+
+
+class TT(StateFormula):
+    """Corresponds to true"""
+
+    def __init__(self):
+        super().__init__()
+
+    def __eq__(self, other):
+        if isinstance(other, TT):
+            return True
+        return False
+
+    def __hash__(self):
+        return hash(True)
+
+    def eval(self, dtmc: DTMC):
+        self.states = dtmc.states
+        return self.states
+
+    def __repr__(self):
+        return f"TT()"
+
+    def __str__(self):
+        return "true"
+
+
+class FF(StateFormula):
+    """Corresponds to true"""
+
+    def __init__(self):
+        super().__init__()
+
+    def __eq__(self, other):
+        if isinstance(other, FF):
+            return True
+        return False
+
+    def __hash__(self):
+        return hash(False)
+
+    def eval(self, dtmc: DTMC):
+        self.states = set()
+        return self.states
+
+    def __repr__(self):
+        return f"FF()"
+
+    def __str__(self):
+        return "false"
 
 
 class AP(StateFormula):
@@ -151,12 +201,14 @@ class Next(PathFormula):
 class BoundedUntil(PathFormula):
     """Bounded until formula"""
 
-    def __init__(self, phi1: StateFormula, phi2: StateFormula, steps):
+    def __init__(self, phi1: StateFormula, phi2: StateFormula, steps: int):
         super().__init__()
         if not isinstance(phi1, StateFormula) or not isinstance(phi2, StateFormula):
             raise ValueError("Passed formulae have to be state formulae")
         self.phi1 = phi1
         self.phi2 = phi2
+        if not isinstance(steps, int) or steps < 0:
+            raise ValueError("Steps has to be a non-negative integer")
         self.steps = steps
 
     def compute_probability(self, state: State, dtmc: DTMC):
@@ -166,5 +218,20 @@ class BoundedUntil(PathFormula):
         return res[state.id]
 
     def __str__(self):
-        return f"({str(self.phi1)} U<={self.steps} {str(self.phi2)})"
+        return f"{str(self.phi1)} U<={self.steps} {str(self.phi2)}"
 
+
+class Until(PathFormula):
+
+    def __init__(self, phi1: StateFormula, phi2: StateFormula):
+        super().__init__()
+        if not isinstance(phi1, StateFormula) or not isinstance(phi2, StateFormula):
+            raise ValueError("Passed formulae have to be state formulae")
+        self.phi1 = phi1
+        self.phi2 = phi2
+
+    def compute_probability(self, state: State, dtmc: DTMC):
+        pass
+
+    def __str__(self):
+        return f"{str(self.phi1)} U {str(self.phi2)}"

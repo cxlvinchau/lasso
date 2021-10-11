@@ -1,3 +1,5 @@
 .idea
-lasso/__pycache__
-lasso/pctl/__pycache__
+**/__pycache__
+**/.coverage
+**/lasso.egg-info
+venv
