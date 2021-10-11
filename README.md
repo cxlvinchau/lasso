@@ -1,4 +1,6 @@
 # lasso
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Tests](https://github.com/cxlvinchau/lasso/actions/workflows/tests.yml/badge.svg)](https://github.com/cxlvinchau/lasso/actions/workflows/tests.yml)
+
 Simple analysis and model checking tool for finite discrete time-homogeneous Markov chains (DTMC). 
 Model checks PCTL properties and computes transient distribution.
 
