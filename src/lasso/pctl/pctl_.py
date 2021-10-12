@@ -231,7 +231,11 @@ class Until(PathFormula):
         self.phi2 = phi2
 
     def compute_probability(self, state: State, dtmc: DTMC):
-        pass
+        states1 = self.phi1.eval(dtmc)
+        states2 = self.phi2.eval(dtmc)
+        res = dtmc.compute_reachability(states2, bad_states=dtmc.states - states1)
+        print(res)
+        return res[state.id]
 
     def __str__(self):
         return f"{str(self.phi1)} U {str(self.phi2)}"

@@ -10,7 +10,7 @@ disjunction.1: state_formula "|" state_formula
 conjunction.2: state_formula "&" state_formula
 neg : "!"
 
-CMP: ">=" | "==" | "<="
+CMP: ">=" | "=" | "<="
 ap: LCASE_LETTER
 range: CMP DECIMAL -> comparison | "["DECIMAL","DECIMAL"]" -> interval
 
@@ -58,23 +58,28 @@ class PCTLTransformer(lark.Transformer):
 
     # Utilities
     def interval(self, bounds):
-        return Interval(bounds[0].value, bounds[1].value)
+        return Interval(float(bounds[0].value), float(bounds[1].value))
 
     def comparison(self, values):
         cmp, bound = values
-        if cmp.value == "==":
-            return Interval(bound.value, bound.value)
+        if cmp.value == "=":
+            return Interval(float(bound.value), float(bound.value))
         if cmp.value == "<=":
-            return Interval(0.0, bound.value)
+            return Interval(0.0, float(bound.value))
         if cmp.value == ">=":
-            return Interval(bound.value, 1.0)
+            return Interval(float(bound.value), 1.0)
 
 
 PCTLTransformer = PCTLTransformer()
 
 
-def parse(s: str):
-    """Parses a string into a PCTL formula"""
+def parse(s: str) -> StateFormula:
+    """
+    Parses a string into a PCTL formula
+
+    :param s: String to be parsed
+    :return: PCTL state formula
+    """
     tree = PCTL_PARSER.parse(s.replace(" ", ""))
     return PCTLTransformer.transform(tree)
 

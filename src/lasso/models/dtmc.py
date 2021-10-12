@@ -1,6 +1,7 @@
 from typing import Union
 
 import numpy as np
+from graphviz import Digraph
 
 
 class State:
@@ -130,7 +131,7 @@ class DTMC:
             size = len(good_states)
             for s in [s for s in self.states if s not in goal_states]:
                 for t in self.transitions:
-                    if s == t.s1 and t.s2 in goal_states:
+                    if s == t.s1 and (t.s2 in good_states or t.s2 in goal_states):
                         good_states.add(s)
         bad_states = set([s for s in bad_states if s not in goal_states])
         good_states -= set(bad_states)
@@ -138,20 +139,28 @@ class DTMC:
         bad_states = list(bad_states)
         goal_states = list(goal_states)
         self.compute_transition_matrix()
+        P = self.transition_matrix
+        A = P[[s.id for s in good_states], :][:, [s.id for s in good_states]]
+        b = np.sum(P[[s.id for s in good_states], :][:, [s.id for s in goal_states]], axis=1)
         if steps:
             # Bounded reachability
             x = np.zeros((len(good_states),1))
-            P = self.transition_matrix
-            A = P[[s.id for s in good_states], :][:, [s.id for s in good_states]]
-            b = np.sum(P[[s.id for s in good_states], :][:, [s.id for s in goal_states]], axis=1)
             for i in range(steps):
                 x = np.matmul(A, x) + b
-            val = np.zeros(len(self.states))
-            val[[s.id for s in goal_states]] = 1.0
-            val[[s.id for s in bad_states]] = 0.0
-            val[[s.id for s in good_states]] = x
-            return val
         else:
             # Unbounded reachability
-            pass
-            # TODO
+            A = np.identity(A.shape[0]) - A
+            x = np.linalg.solve(A, b)
+        val = np.zeros(len(self.states))
+        val[[s.id for s in goal_states]] = 1.0
+        val[[s.id for s in bad_states]] = 0.0
+        val[[s.id for s in good_states]] = x
+        return val
+
+    def to_dot(self):
+        digraph = Digraph()
+        for s in self.states:
+            digraph.node(str(s.id), f"{s.name}\n{s.ap}")
+        for t in self.transitions:
+            digraph.edge(str(t.s1.id), str(t.s2.id), label=str(t.p))
+        return digraph.source
