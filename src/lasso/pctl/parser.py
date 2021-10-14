@@ -1,6 +1,6 @@
 import lark
 
-from lasso.pctl.pctl_ import TT, AP, Disjunction, StateFormula, Conjunction, Negation, P, Next, BoundedUntil, Until
+from lasso.pctl.pctl import TT, AP, Disjunction, StateFormula, Conjunction, Negation, P, Next, BoundedUntil, Until
 from lasso.utils import Interval
 
 GRAMMAR = r"""
